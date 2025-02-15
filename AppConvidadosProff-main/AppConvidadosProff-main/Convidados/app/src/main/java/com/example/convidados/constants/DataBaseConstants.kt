@@ -14,5 +14,17 @@ class DataBaseConstants {
             const val PRESENCE = "presence"
         }
     }
+  object EVENTO {
+      const val ID = "eventid"
+      const val TABLE_NAME = "event"
 
+      object COLUMNS {
+          const val ID = "id"
+          const val NOME = "NOME"
+          const val ENDERECO = "ENDERECO"
+          const val IDADE = "idade"
+          const val DATA = "data"
+      }
+
+  }
 }
