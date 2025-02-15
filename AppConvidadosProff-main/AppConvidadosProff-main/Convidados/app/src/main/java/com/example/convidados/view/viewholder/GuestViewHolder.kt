@@ -14,7 +14,11 @@ class GuestViewHolder(
 
     @SuppressLint("SetTextI18n")
     fun bind(guest: GuestModel) {
-        bind.textName.text = "Nome: ${guest.name}, cargo: ${guest.cargo}, idade: ${guest.idade}"
+        bind.textName.text = "Nome: ${guest.name} \n" +
+                "Evento: ${guest.tipoEvento} \n" +
+                "Local do evento: ${guest.localEvento} \n" +
+                "Idade mínima do evento: ${guest.idadeMinimaEvento} \n" +
+                "Idade do convidado: ${guest.idade}"
 
         bind.textName.setOnClickListener {
             listener.onClick(guest.id)

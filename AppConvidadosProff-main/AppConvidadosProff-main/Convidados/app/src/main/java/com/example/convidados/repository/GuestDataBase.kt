@@ -22,8 +22,10 @@ class GuestDataBase(context: Context) : SQLiteOpenHelper(context, NAME, null, VE
                     DataBaseConstants.GUEST.TABLE_NAME + " (" +
                     DataBaseConstants.GUEST.COLUMNS.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     DataBaseConstants.GUEST.COLUMNS.NAME + " TEXT, " +
-                    DataBaseConstants.GUEST.COLUMNS.CARGO + " TEXT, " +
-                    DataBaseConstants.GUEST.COLUMNS.IDADE + " FLOAT, " +
+                    DataBaseConstants.GUEST.COLUMNS.IDADE + " INTEGER, " +
+                    DataBaseConstants.GUEST.COLUMNS.TIPO_EVENTO + " TEXT, " +
+                    DataBaseConstants.GUEST.COLUMNS.LOCAL_EVENTO + " TEXT, " +
+                    DataBaseConstants.GUEST.COLUMNS.IDADE_MINIMA_EVENTO + " INTEGER, " +
                     DataBaseConstants.GUEST.COLUMNS.PRESENCE + " INTEGER);"
             )
         } catch (e: Exception) {
@@ -33,9 +35,6 @@ class GuestDataBase(context: Context) : SQLiteOpenHelper(context, NAME, null, VE
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        if (oldVersion < 2) {
-            db?.execSQL("ALTER TABLE Guest ADD COLUMN cargo TEXT")
-            db?.execSQL("ALTER TABLE Guest ADD COLUMN idade FLOAT")
-        }
+        //not necessary
     }
 }

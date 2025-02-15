@@ -24,7 +24,6 @@ class GuestRepository private constructor(context: Context) {
 
     // inserir.
     fun insert(guest: GuestModel): Boolean {
-
         return try {
             val db = guestDataBase.writableDatabase
 
@@ -32,27 +31,28 @@ class GuestRepository private constructor(context: Context) {
 
             val values = ContentValues()
             values.put(DataBaseConstants.GUEST.COLUMNS.NAME, guest.name)
-            values.put(DataBaseConstants.GUEST.COLUMNS.CARGO, guest.cargo)
             values.put(DataBaseConstants.GUEST.COLUMNS.IDADE, guest.idade)
+            values.put(DataBaseConstants.GUEST.COLUMNS.TIPO_EVENTO, guest.tipoEvento)
+            values.put(DataBaseConstants.GUEST.COLUMNS.IDADE_MINIMA_EVENTO, guest.idadeMinimaEvento)
+            values.put(DataBaseConstants.GUEST.COLUMNS.LOCAL_EVENTO, guest.localEvento)
             values.put(DataBaseConstants.GUEST.COLUMNS.PRESENCE, presence)
 
             val result = db.insert(DataBaseConstants.GUEST.TABLE_NAME, null, values)
-            if (result != -1L) {
-                Log.d("GuestRepository", "Convidado inserido com sucesso!")
-                true
-            } else {
-                Log.e("GuestRepository", "Falha ao inserir convidado.")
-                false
+
+            if(result == -1L) {
+                throw RuntimeException("Erro ao inserir convidado")
             }
 
+            Log.d("GuestRepository", "Convidado inserido com sucesso!")
+            true
         } catch (e: Exception) {
+            e.message?.let { Log.e("GuestRepository", it) }
             false
         }
     }
 
     // atualizar.
     fun update(guest: GuestModel): Boolean {
-
         return try {
             val db = guestDataBase.writableDatabase
 
@@ -61,23 +61,24 @@ class GuestRepository private constructor(context: Context) {
             val values = ContentValues()
 
             values.put(DataBaseConstants.GUEST.COLUMNS.NAME, guest.name)
-            values.put(DataBaseConstants.GUEST.COLUMNS.CARGO, guest.cargo)
             values.put(DataBaseConstants.GUEST.COLUMNS.IDADE, guest.idade)
+            values.put(DataBaseConstants.GUEST.COLUMNS.TIPO_EVENTO, guest.tipoEvento)
+            values.put(DataBaseConstants.GUEST.COLUMNS.IDADE_MINIMA_EVENTO, guest.idadeMinimaEvento)
+            values.put(DataBaseConstants.GUEST.COLUMNS.LOCAL_EVENTO, guest.localEvento)
             values.put(DataBaseConstants.GUEST.COLUMNS.PRESENCE, presence)
 
             val selection = DataBaseConstants.GUEST.COLUMNS.ID + " = ?"
             val args = arrayOf(guest.id.toString())
 
             val result = db.update(DataBaseConstants.GUEST.TABLE_NAME, values, selection, args)
-            if (result != -1) {
-                Log.d("GuestRepository", "Convidado atualizado com sucesso!")
-                true
-            } else {
-                Log.e("GuestRepository", "Falha ao atualizar atualizar.")
-                false
-            }
 
+            if (result == -1) {
+                throw RuntimeException("Falha ao atualizar contato.")
+            }
+            Log.d("GuestRepository", "Convidado atualizado com sucesso!")
+            true
         } catch (e: Exception) {
+            e.message?.let { Log.e("GuestRepository", it) }
             false
         }
 
@@ -85,22 +86,21 @@ class GuestRepository private constructor(context: Context) {
 
     // deletar.
     fun delete(id: Int): Boolean {
-
         return try {
             val db = guestDataBase.writableDatabase
             val selection = DataBaseConstants.GUEST.COLUMNS.ID + " = ?"
             val args = arrayOf(id.toString())
 
             val result = db.delete(DataBaseConstants.GUEST.TABLE_NAME, selection, args)
-            if (result != -1) {
-                Log.d("GuestRepository", "Convidado deletado com sucesso!")
-                true
-            } else {
-                Log.e("GuestRepository", "Falha ao deletar o convidado.")
-                false
+
+            if (result == -1) {
+                throw RuntimeException("Falha ao deletar o convidado.")
             }
 
+            Log.d("GuestRepository", "Convidado deletado com sucesso!")
+            true
         } catch (e: Exception) {
+            e.message?.let { Log.e("GuestRepository", it) }
             false
         }
 
@@ -114,13 +114,7 @@ class GuestRepository private constructor(context: Context) {
         try {
             val db = guestDataBase.readableDatabase
 
-            val projection = arrayOf(
-                DataBaseConstants.GUEST.COLUMNS.ID,
-                DataBaseConstants.GUEST.COLUMNS.NAME,
-                DataBaseConstants.GUEST.COLUMNS.CARGO,
-                DataBaseConstants.GUEST.COLUMNS.IDADE,
-                DataBaseConstants.GUEST.COLUMNS.PRESENCE
-            )
+            val projection = getProjection()
 
             val selection = DataBaseConstants.GUEST.COLUMNS.ID + " = ?"
             val args = arrayOf(id.toString())
@@ -133,19 +127,24 @@ class GuestRepository private constructor(context: Context) {
                 while(cursor.moveToNext()) {
                     val name =
                         cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.NAME)))
-                    val cargo =
-                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.CARGO)))
                     val idade =
-                        cursor.getFloat(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE)))
+                        cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE)))
+                    val tipoEvento =
+                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.TIPO_EVENTO)))
+                    val localEvento =
+                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.LOCAL_EVENTO)))
+                    val idadeMinimaEvento =
+                        cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE_MINIMA_EVENTO)))
                     val presence =
                         cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.PRESENCE)))
-                    guest = GuestModel(id, name, cargo, idade,presence == 1)
+                    guest = GuestModel(id, name, idade, tipoEvento, localEvento, idadeMinimaEvento, presence == 1)
                 }
             }
 
             cursor.close()
 
         } catch (e: Exception) {
+            e.message?.let { Log.e("GuestRepository", it) }
             return guest
         }
         return guest
@@ -160,13 +159,7 @@ class GuestRepository private constructor(context: Context) {
         try {
             val db = guestDataBase.readableDatabase
 
-            val projection = arrayOf(
-                DataBaseConstants.GUEST.COLUMNS.ID,
-                DataBaseConstants.GUEST.COLUMNS.NAME,
-                DataBaseConstants.GUEST.COLUMNS.CARGO,
-                DataBaseConstants.GUEST.COLUMNS.IDADE,
-                DataBaseConstants.GUEST.COLUMNS.PRESENCE
-            )
+            val projection = getProjection()
 
             val cursor = db.query(
                 DataBaseConstants.GUEST.TABLE_NAME,
@@ -184,13 +177,17 @@ class GuestRepository private constructor(context: Context) {
                         cursor.getInt(cursor.getColumnIndex(DataBaseConstants.GUEST.COLUMNS.ID))
                     val name =
                         cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.NAME)))
-                    val cargo =
-                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.CARGO)))
                     val idade =
-                        cursor.getFloat(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE)))
+                        cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE)))
+                    val tipoEvento =
+                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.TIPO_EVENTO)))
+                    val localEvento =
+                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.LOCAL_EVENTO)))
+                    val idadeMinimaEvento =
+                        cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE_MINIMA_EVENTO)))
                     val presence =
                         cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.PRESENCE)))
-                    val guest = GuestModel(id, name, cargo, idade,presence == 1)
+                    val guest = GuestModel(id, name, idade, tipoEvento, localEvento, idadeMinimaEvento, presence == 1)
                     list.add(guest)
                 }
             }
@@ -210,16 +207,8 @@ class GuestRepository private constructor(context: Context) {
         try {
             val db = guestDataBase.readableDatabase
 
-            val projection = arrayOf(
-                DataBaseConstants.GUEST.COLUMNS.ID,
-                DataBaseConstants.GUEST.COLUMNS.NAME,
-                DataBaseConstants.GUEST.COLUMNS.CARGO,
-                DataBaseConstants.GUEST.COLUMNS.IDADE,
-                DataBaseConstants.GUEST.COLUMNS.PRESENCE
-            )
-
             val cursor =
-                db.rawQuery("SELECT id, name, cargo, idade, presence FROM Guest WHERE presence == 1", null)
+                db.rawQuery("SELECT id, name, idade, tipoEvento, localEvento, idadeMinimaEvento, presence FROM Guest WHERE presence == 1", null)
 
             if (cursor != null && cursor.count > 0) {
                 while (cursor.moveToNext()) {
@@ -227,13 +216,17 @@ class GuestRepository private constructor(context: Context) {
                         cursor.getInt(cursor.getColumnIndex(DataBaseConstants.GUEST.COLUMNS.ID))
                     val name =
                         cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.NAME)))
-                    val cargo =
-                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.CARGO)))
                     val idade =
-                        cursor.getFloat(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE)))
+                        cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE)))
+                    val tipoEvento =
+                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.TIPO_EVENTO)))
+                    val localEvento =
+                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.LOCAL_EVENTO)))
+                    val idadeMinimaEvento =
+                        cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE_MINIMA_EVENTO)))
                     val presence =
                         cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.PRESENCE)))
-                    val guest = GuestModel(id, name, cargo, idade,presence == 1)
+                    val guest = GuestModel(id, name, idade, tipoEvento, localEvento, idadeMinimaEvento, presence == 1)
                     list.add(guest)
                 }
             }
@@ -253,16 +246,8 @@ class GuestRepository private constructor(context: Context) {
         try {
             val db = guestDataBase.readableDatabase
 
-            val projection = arrayOf(
-                DataBaseConstants.GUEST.COLUMNS.ID,
-                DataBaseConstants.GUEST.COLUMNS.NAME,
-                DataBaseConstants.GUEST.COLUMNS.CARGO,
-                DataBaseConstants.GUEST.COLUMNS.IDADE,
-                DataBaseConstants.GUEST.COLUMNS.PRESENCE
-            )
-
             val cursor =
-                db.rawQuery("SELECT id, name, cargo, idade, presence FROM Guest WHERE presence == 0", null)
+                db.rawQuery("SELECT id, name, idade, tipoEvento, localEvento, idadeMinimaEvento, presence FROM Guest WHERE presence == 0", null)
 
             if (cursor != null && cursor.count > 0) {
                 while (cursor.moveToNext()) {
@@ -270,17 +255,20 @@ class GuestRepository private constructor(context: Context) {
                         cursor.getInt(cursor.getColumnIndex(DataBaseConstants.GUEST.COLUMNS.ID))
                     val name =
                         cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.NAME)))
-                    val cargo =
-                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.CARGO)))
                     val idade =
-                        cursor.getFloat(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE)))
+                        cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE)))
+                    val tipoEvento =
+                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.TIPO_EVENTO)))
+                    val localEvento =
+                        cursor.getString(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.LOCAL_EVENTO)))
+                    val idadeMinimaEvento =
+                        cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.IDADE_MINIMA_EVENTO)))
                     val presence =
                         cursor.getInt(cursor.getColumnIndex((DataBaseConstants.GUEST.COLUMNS.PRESENCE)))
-                    val guest = GuestModel(id, name, cargo, idade,presence == 1)
+                    val guest = GuestModel(id, name, idade, tipoEvento, localEvento, idadeMinimaEvento, presence == 1)
                     list.add(guest)
                 }
             }
-
             cursor.close()
         } catch (e: Exception) {
             return list
@@ -288,4 +276,15 @@ class GuestRepository private constructor(context: Context) {
         return list
     }
 
+    private fun getProjection() : Array<String> {
+        return arrayOf(
+            DataBaseConstants.GUEST.COLUMNS.ID,
+            DataBaseConstants.GUEST.COLUMNS.NAME,
+            DataBaseConstants.GUEST.COLUMNS.IDADE,
+            DataBaseConstants.GUEST.COLUMNS.TIPO_EVENTO,
+            DataBaseConstants.GUEST.COLUMNS.LOCAL_EVENTO,
+            DataBaseConstants.GUEST.COLUMNS.IDADE_MINIMA_EVENTO,
+            DataBaseConstants.GUEST.COLUMNS.PRESENCE
+        )
+    }
 }

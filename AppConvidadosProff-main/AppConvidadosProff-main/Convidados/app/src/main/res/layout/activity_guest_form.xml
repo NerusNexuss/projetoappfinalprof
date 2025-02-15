@@ -30,27 +30,6 @@
         app:layout_constraintTop_toBottomOf="@id/text_name" />
 
     <TextView
-        android:id="@+id/text_name2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Cargo:"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_name" />
-
-    <EditText
-        android:id="@+id/edit_text_cargo"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_name2" />
-
-    <TextView
         android:id="@+id/text_age"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -59,7 +38,8 @@
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edit_text_cargo" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_name"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/edit_text_age"
@@ -72,21 +52,75 @@
         app:layout_constraintTop_toBottomOf="@+id/text_age" />
 
     <TextView
-        android:id="@+id/text_present"
+        android:id="@+id/text_tipo_evento"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/voc_estar_presente"
+        android:layout_marginTop="8dp"
+        android:text="Tipo evento:"
         android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_age" />
+
+    <EditText
+        android:id="@+id/edit_text_tipo_evento"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_tipo_evento" />
+
+    <TextView
+        android:id="@+id/text_local_evento"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Local do evento:"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_tipo_evento" />
+
+    <EditText
+        android:id="@+id/edit_text_local_evento"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_local_evento" />
+
+    <TextView
+        android:id="@+id/text_idade_evento"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Idade minima do evento:"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_local_evento" />
+
+    <EditText
+        android:id="@+id/edit_text_idade_evento"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_idade_evento" />
+
 
     <RadioGroup
         android:id="@+id/radio_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_present">
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_idade_evento">
 
         <RadioButton
             android:id="@+id/radio_present"

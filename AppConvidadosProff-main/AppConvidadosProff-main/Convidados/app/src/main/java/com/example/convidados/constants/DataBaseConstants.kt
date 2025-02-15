@@ -9,22 +9,11 @@ class DataBaseConstants {
         object COLUMNS {
             const val ID = "id"
             const val NAME = "name"
-            const val CARGO = "cargo"
             const val IDADE = "idade"
+            const val TIPO_EVENTO = "tipoEvento"
+            const val LOCAL_EVENTO = "localEvento"
+            const val IDADE_MINIMA_EVENTO = "idadeMinimaEvento"
             const val PRESENCE = "presence"
         }
     }
-  object EVENTO {
-      const val ID = "eventid"
-      const val TABLE_NAME = "event"
-
-      object COLUMNS {
-          const val ID = "id"
-          const val NOME = "NOME"
-          const val ENDERECO = "ENDERECO"
-          const val IDADE = "idade"
-          const val DATA = "data"
-      }
-
-  }
 }

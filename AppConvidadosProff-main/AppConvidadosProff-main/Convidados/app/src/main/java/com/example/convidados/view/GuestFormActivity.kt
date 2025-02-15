@@ -52,12 +52,13 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
         override fun onClick(view: View) {
             if (view.id == R.id.button_enviar) {
                 val name = binding.editTextName.text.toString()
-                val cargo = binding.editTextCargo.text.toString()
-                val idade = (binding.editTextAge.text.toString()).toFloat()
-                // val idade = binding.editTextAge.text.toString()
+                val idade = (binding.editTextAge.text.toString()).toInt()
+                val tipoEvento = binding.editTextTipoEvento.text.toString()
+                val localEvento = binding.editTextLocalEvento.text.toString()
+                val idadeMinimaEvento = (binding.editTextIdadeEvento.text.toString()).toInt()
                 val presence = binding.radioPresent.isChecked
 
-                val model = GuestModel(guestId, name, cargo, idade, presence)
+                val model = GuestModel(guestId, name, idade, tipoEvento, localEvento, idadeMinimaEvento, presence)
                 viewModel.save(model)
             }
         }
@@ -65,8 +66,11 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
         private fun observe(){
             viewModel.guest.observe(this, Observer {
                 binding.editTextName.setText(it.name)
-                binding.editTextCargo.setText(it.cargo)
-                binding.editTextAge.setText(it.idade.toString())
+                binding.editTextAge.setText(it.idade)
+                binding.editTextTipoEvento.setText(it.tipoEvento)
+                binding.editTextLocalEvento.setText(it.localEvento)
+                binding.editTextIdadeEvento.setText(it.idadeMinimaEvento)
+
                 if(it.presence){
                     binding.radioPresent.isChecked = true
                 } else {
