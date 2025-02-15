@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Convidados</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Marcos da Luz</string>
+    <string name="nav_header_subtitle">marcosdaluzvirtual@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="menu_all_guests">Todos os Convidados</string>
+    <string name="menu_present">Presentes</string>
+    <string name="menu_absent">Ausentes</string>
+    <string name="nome">Nome:</string>
+    <string name="presenca">Você estará presente?</string>
+    <string name="presente">Presente</string>
+    <string name="ausente">Ausente</string>
+    <string name="enviar">Enviar</string>
+    <string name="voc_estar_presente">Seu texto aqui</string>
+</resources>
+
